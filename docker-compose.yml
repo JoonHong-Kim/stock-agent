@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-stockapp}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build:
+      context: ./src
+    command: >
+      poetry run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@db:5432/stockapp}
+      FINNHUB_API_KEY: ${FINNHUB_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    command: >
+      sh -c "corepack enable && pnpm install && pnpm dev --hostname 0.0.0.0"
+    depends_on:
+      - api
+    env_file:
+      - ./.env
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:8000
+      NEXT_PUBLIC_BACKEND_WS_URL: ws://localhost:8000/ws/news
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app
+      - web_node_modules:/app/node_modules
+
+volumes:
+  pgdata:
+  web_node_modules:

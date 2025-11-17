@@ -1,0 +1,34 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+dist/
+build/
+.venv/
+
+# Node/Next.js artifacts
+node_modules/
+web/.next/
+web/.pnpm-store/
+web/out/
+web/.turbo/
+web/.vercel/
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+
+# IDE/editor noise
+.DS_Store
+.idea/
+.vscode/
