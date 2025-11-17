@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import List, Optional, Sequence, Set
 
-import httpx
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request, Response, status
 from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
@@ -20,6 +19,7 @@ from ..schemas import (
     TickerSyncResult,
     WatchlistRequest,
 )
+from ..services.tickers import sync_tickers_from_finnhub
 from ..util import ensure_list, normalize_symbol, parse_symbols
 
 
@@ -171,52 +171,7 @@ async def sync_tickers(session: AsyncSession = Depends(get_session)) -> TickerSy
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="FINNHUB_API_KEY is required to sync tickers.",
         )
-    async with httpx.AsyncClient(timeout=30) as client:
-        response = await client.get(
-            str(settings.finnhub_symbol_url),
-            params={
-                "exchange": settings.finnhub_symbol_exchange,
-                "token": settings.finnhub_api_key,
-            },
-        )
-        response.raise_for_status()
-        data = response.json()
-
-    payload = [
-        {
-            "symbol": (item.get("symbol") or "").upper(),
-            "name": item.get("description"),
-            "exchange": item.get("exchange"),
-            "mic": item.get("mic"),
-            "currency": item.get("currency"),
-            "type": item.get("type"),
-            "is_active": not item.get("delisted"),
-        }
-        for item in data
-        if item.get("symbol")
-    ]
-
-    if not payload:
-        return TickerSyncResult(total=0, inserted_or_updated=0)
-
-    insert_stmt = insert(Ticker).values(payload)
-    update_columns = {
-        "name": insert_stmt.excluded.name,
-        "exchange": insert_stmt.excluded.exchange,
-        "mic": insert_stmt.excluded.mic,
-        "currency": insert_stmt.excluded.currency,
-        "type": insert_stmt.excluded.type,
-        "is_active": insert_stmt.excluded.is_active,
-        "updated_at": func.now(),
-    }
-    insert_stmt = insert_stmt.on_conflict_do_update(
-        index_elements=[Ticker.symbol], set_=update_columns
-    ).returning(Ticker.symbol)
-
-    result = await session.execute(insert_stmt)
-    await session.commit()
-    rows = result.scalars().all()
-    return TickerSyncResult(total=len(payload), inserted_or_updated=len(rows))
+    return await sync_tickers_from_finnhub(session)
 
 
 async def _ensure_symbols_exist(

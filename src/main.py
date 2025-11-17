@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import List
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -9,12 +10,14 @@ from .config import get_settings
 from .db.session import SessionLocal, init_db
 from .streaming.dispatcher import ConnectionManager, NewsDispatcher
 from .news.fetcher import NewsFetcher, NewsStreamLoop
+from .services.tickers import sync_tickers_from_finnhub
 from .news.body_fetcher import ArticleBodyFetcher
 from .api.routes import router
 from .util import parse_symbols
 
 
 settings = get_settings()
+logger = logging.getLogger("stockagent")
 
 app = FastAPI(title=settings.app_name)
 app.include_router(router)
@@ -41,6 +44,20 @@ app.state.body_fetcher = article_body_fetcher
 @app.on_event("startup")
 async def startup_event() -> None:
     await init_db()
+    if settings.finnhub_api_key:
+        async with SessionLocal() as session:
+            try:
+                result = await sync_tickers_from_finnhub(session)
+                if result.inserted_or_updated:
+                    logger.info(
+                        "Synced %s tickers (payload %s)",
+                        result.inserted_or_updated,
+                        result.total,
+                    )
+            except Exception as exc:  # pragma: no cover
+                logger.warning("Ticker sync failed: %s", exc)
+    else:
+        logger.warning("FINNHUB_API_KEY missing; ticker sync skipped.")
     await article_body_fetcher.start()
     await stream_loop.start()
 

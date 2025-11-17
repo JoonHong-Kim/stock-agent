@@ -34,7 +34,7 @@ StockAgent는 관심 있는 티커를 추가해 두면 자동으로 관련 뉴�
 ```bash
 cp .env.example .env  # FINNHUB_API_KEY 에서 발급받은 키를 채웁니다.
 docker compose up --build
-curl -X POST http://localhost:8000/api/tickers/sync  # 미국 티커 초기 동기화
+curl -X POST http://localhost:8000/api/tickers/sync  # (선택) 수동 재동기화 시 사용
 # 기사 원문 저장을 위해 브라우저 의존성을 설치합니다 (최초 1회).
 cd src && poetry run playwright install --with-deps chromium
 curl -X POST http://localhost:8000/api/news/backfill-body -H "Content-Type: application/json" -d '{"limit":50}'
@@ -110,7 +110,7 @@ Docker 컨테이너에서도 동일하게 실행할 수 있으며, 배포 시에
 ## 작동 방식
 
 1. **관심 종목 추가**: 사용자가 `/api/watchlist` 엔드포인트(또는 UI)를 통해 티커를 추가하면 `watched_symbols` 테이블에 저장됩니다. 이 시점부터 해당 심볼은 폴링 대상이 됩니다.
-2. **티커 유효성 검증**: `tickers` 테이블은 Finnhub 미국 거래소 심볼을 캐시하며, `/api/watchlist` 는 여기에 없는 입력을 400으로 거절합니다. 새 환경에서는 먼저 `/api/tickers/sync` 를 호출해 목록을 동기화하세요.
+2. **티커 유효성 검증**: `tickers` 테이블은 Finnhub 미국 거래소 심볼을 캐시하며, `/api/watchlist` 는 여기에 없는 입력을 400으로 거절합니다. 서버가 뜰 때마다 자동으로 전체 심볼을 최신 상태로 동기화하고, 필요할 경우 `/api/tickers/sync` 로 수동 재동기화를 수행할 수 있습니다.
 3. **원문 저장 + 스케줄러**: FastAPI 앱이 기동되면 `NewsStreamLoop`가 백그라운드 태스크로 실행되며, 기본적으로 `FETCH_TIMEZONE` 기준 매일 오전 9시에 모든 관심 종목을 순회합니다(`FETCH_DAILY_HOUR`). 각 심볼마다 Finnhub 회사 뉴스 API(또는 API 키가 없으면 Mock 데이터)를 호출해 최근 수집 시각 이후 기사를 가져오고, Playwright를 이용해 기사 URL의 원문을 비동기로 크롤링하여 `articles.body` 필드에 저장합니다 (REST 응답에는 노출되지 않음). 필요하면 `FETCH_DAILY_HOUR`를 비워두고 `FETCH_INTERVAL_SECONDS` 를 써서 분 단위 폴링으로 전환할 수도 있습니다.
 4. **저장 및 중복 제거**: 가져온 결과는 `Article` 모델로 upsert 되어 중복이 제거됩니다. 새로 저장된 기사만 추려서 broadcasting 대상으로 삼습니다.
 5. **실시간 전달**: `NewsDispatcher`가 해당 티커를 구독 중인 WebSocket 클라이언트 목록을 찾아 새 기사를 JSON으로 푸시합니다. 프론트엔드는 REST로 초기 데이터를 받고, WebSocket으로 스트림을 받아 리스트를 즉시 갱신합니다.
