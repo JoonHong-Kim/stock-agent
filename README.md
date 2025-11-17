@@ -77,7 +77,7 @@ Node.js 18 이상 / pnpm 8 이상을 권장합니다. `NEXT_PUBLIC_BACKEND_URL` 
    ```bash
    cd src
    ALEMBIC_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/stockapp \\
-     poetry run alembic revision --autogenerate -m "my change"
+     poetry run alembic -c src/alembic.ini revision --autogenerate -m "my change"
    ```
 
    `ALEMBIC_DATABASE_URL` 는 로컬에서 접근 가능한 Postgres 주소로 바꿔주세요 (Docker를 쓰면 `localhost:5432`).
@@ -87,7 +87,7 @@ Node.js 18 이상 / pnpm 8 이상을 권장합니다. `NEXT_PUBLIC_BACKEND_URL` 
    ```bash
    cd src
    ALEMBIC_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/stockapp \\
-     poetry run alembic upgrade head
+     poetry run alembic -c src/alembic.ini upgrade head
    ```
 
 Docker 컨테이너에서도 동일하게 실행할 수 있으며, 배포 시에는 `poetry run alembic upgrade head`를 `api` 컨테이너 시작 전에 한 번 호출하면 됩니다.
