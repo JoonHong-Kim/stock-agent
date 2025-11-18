@@ -155,9 +155,17 @@ async def list_tickers(
 ) -> List[TickerOut]:
     stmt = select(Ticker).where(Ticker.is_active.is_(True)).order_by(Ticker.symbol).limit(limit)
     if query:
-        pattern = f"%{query.upper()}%"
-        stmt = stmt.where(
-            or_(Ticker.symbol.ilike(pattern), Ticker.name.ilike(pattern))
+        pattern = f"%{query}%"
+        prefix_pattern = f"{query}%"
+        stmt = (
+            select(Ticker)
+            .where(Ticker.is_active.is_(True))
+            .where(Ticker.symbol.ilike(pattern))
+            .order_by(
+                Ticker.symbol.ilike(prefix_pattern).desc(),
+                Ticker.symbol,
+            )
+            .limit(limit)
         )
     result = await session.execute(stmt)
     rows = result.scalars().all()

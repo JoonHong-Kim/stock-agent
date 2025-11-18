@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 
 type Props = {
   watchlist: string[];
@@ -13,6 +13,8 @@ type Props = {
   isRefreshing: boolean;
   canRefresh: boolean;
   refreshError?: string | null;
+  tickerOptions: Array<{ symbol: string; name?: string | null }>;
+  onSearchTicker: (query: string) => void;
 };
 
 export function TickerSelector({
@@ -26,9 +28,17 @@ export function TickerSelector({
   isRefreshing,
   canRefresh,
   refreshError,
+  tickerOptions,
+  onSearchTicker,
 }: Props) {
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const optionsToRender = useMemo(
+    () => tickerOptions.slice(0, 20),
+    [tickerOptions]
+  );
+  const showSuggestions = value.trim().length > 0 && optionsToRender.length > 0;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -72,12 +82,42 @@ export function TickerSelector({
           <input
             placeholder="예: AAPL"
             value={value}
-            onChange={(event) => setValue(event.target.value.toUpperCase())}
+            onChange={(event) => {
+              const next = event.target.value;
+              setValue(next);
+              onSearchTicker(next);
+            }}
             disabled={isSubmitting}
           />
           <button type="submit" disabled={isSubmitting}>
             추가
           </button>
+          {showSuggestions && (
+            <div className="ticker-suggestions">
+              {optionsToRender.map((option) => (
+                <button
+                  type="button"
+                  key={option.symbol}
+                  className="ticker-suggestion"
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    const symbol = option.symbol.toUpperCase();
+                    setValue(symbol);
+                    onSearchTicker(symbol);
+                  }}
+                >
+                  <span className="ticker-suggestion__symbol">
+                    {option.symbol}
+                  </span>
+                  {option.name && (
+                    <span className="ticker-suggestion__name">
+                      {option.name}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </form>
         {error && <span className="error">{error}</span>}
       </header>

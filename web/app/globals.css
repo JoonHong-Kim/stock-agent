@@ -131,6 +131,7 @@ h1 {
 .ticker-form {
   display: flex;
   gap: 0.75rem;
+  position: relative;
 }
 
 .ticker-form input {
@@ -149,6 +150,47 @@ h1 {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+}
+
+.ticker-suggestions {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  z-index: 5;
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticker-suggestion {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ticker-suggestion:hover {
+  background: rgba(79, 70, 229, 0.08);
+}
+
+.ticker-suggestion__symbol {
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.ticker-suggestion__name {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-left: 0.5rem;
 }
 
 .ticker-list {

@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   addToWatchlist,
   fetchWatchlist,
+  fetchTickers,
   refreshNewsNow,
   removeFromWatchlist,
 } from "@/api/client";
-import { useNewsStream } from "@/hook/useNewsStream";
 import { NewsFeed } from "@/components/NewsFeed";
 import { TickerSelector } from "@/components/TickerSelector";
-import { WatchlistEntry } from "@/types/news";
+import { useNewsStream } from "@/hook/useNewsStream";
+import { TickerOption, WatchlistEntry } from "@/types/news";
 
 export default function HomePage() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
@@ -19,6 +20,8 @@ export default function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState<string | null>(null);
+  const [tickerOptions, setTickerOptions] = useState<TickerOption[]>([]);
+  const [tickerQuery, setTickerQuery] = useState("");
 
   useEffect(() => {
     fetchWatchlist()
@@ -33,10 +36,22 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchTickers(tickerQuery || undefined)
+        .then((options) => setTickerOptions(options))
+        .catch(() => setTickerOptions([]));
+    }, 200);
+    return () => clearTimeout(handler);
+  }, [tickerQuery]);
+
+  useEffect(() => {
     setRefreshError((current) => (current ? null : current));
   }, [selectedSymbols]);
 
   const { articles, status } = useNewsStream(selectedSymbols);
+  const handleSearchTickers = useCallback((query: string) => {
+    setTickerQuery(query.trim());
+  }, []);
 
   const handleAdd = async (symbol: string) => {
     setIsSubmitting(true);
@@ -114,6 +129,8 @@ export default function HomePage() {
           isRefreshing={isRefreshing}
           canRefresh={selectedSymbols.length > 0}
           refreshError={refreshError}
+          tickerOptions={tickerOptions}
+          onSearchTicker={handleSearchTickers}
         />
         <NewsFeed
           articles={articles}

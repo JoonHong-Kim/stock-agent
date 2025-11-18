@@ -1,5 +1,5 @@
 import { env } from "@/config/env";
-import { NewsArticle, WatchlistEntry } from "@/types/news";
+import { NewsArticle, TickerOption, WatchlistEntry } from "@/types/news";
 
 async function handleResponse<T>(response: Response): Promise<T> {
   const body = await response.text();
@@ -85,6 +85,19 @@ export async function refreshNewsNow(
   });
   const payload = await handleResponse<NewsApiResponse>(response);
   return payload.map(mapArticle);
+}
+
+export async function fetchTickers(
+  query?: string
+): Promise<TickerOption[]> {
+  const search = new URLSearchParams();
+  if (query) {
+    search.set("query", query);
+  }
+  const response = await fetch(
+    `${env.backendHttpUrl}/api/tickers?${search.toString()}`
+  );
+  return handleResponse<TickerOption[]>(response);
 }
 
 type NewsApiResponse = Array<{

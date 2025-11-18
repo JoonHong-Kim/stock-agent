@@ -13,3 +13,8 @@ export interface WatchlistEntry {
   symbol: string;
   created_at: string;
 }
+
+export interface TickerOption {
+  symbol: string;
+  name?: string | null;
+}
