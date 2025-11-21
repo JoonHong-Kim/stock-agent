@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
+from pathlib import Path
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -9,9 +10,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-PROJECT_ROOT = os.path.dirname(BASE_DIR)
-sys.path.append(PROJECT_ROOT)
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
+sys.path.append(str(PROJECT_ROOT))
 
 from src.config import get_settings  # type: ignore
 from src.db.models import Base  # type: ignore

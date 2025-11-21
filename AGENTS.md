@@ -6,8 +6,8 @@
 - `docker-compose.yml`, `.env`, `.env.example` – shared runtime configuration.
 
 ## Build, Test, and Development Commands
-- **Backend local run:** `cd src && poetry install && poetry run uvicorn src.main:app --reload` – hot-reloads API against local Postgres.
-- **Backend tests:** `cd src && poetry run pytest` – executes async/unit suites under `src/test/`.
+- **Backend local run:** `poetry install && poetry run uvicorn src.main:app --reload` – hot-reloads API against local Postgres.
+- **Backend tests:** `poetry run pytest` – executes async/unit suites under `src/test/`.
 - **Frontend dev server:** `cd web && pnpm install && pnpm dev` – launches Next.js on `localhost:3000`.
 - **Frontend lint/build:** `pnpm lint` for ESLint, `pnpm build` for production bundle.
 - **Full stack via Docker:** `docker compose up --build` – starts Postgres, FastAPI (`api`), and Next.js (`web`).

@@ -58,3 +58,19 @@ class Article(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+
+
+class Report(Base):
+    __tablename__ = "reports"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    symbol: Mapped[str | None] = mapped_column(
+        String(32),
+        index=True,
+        nullable=True,
+    )
+    type: Mapped[str] = mapped_column(String(32))
+    content: Mapped[str] = mapped_column(Text())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )

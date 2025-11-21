@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..config import get_settings
 from ..db.session import get_session
-from ..db.models import Article, Ticker, WatchedSymbol
+from ..db.models import Article, Report, Ticker, WatchedSymbol
 from ..schemas import (
     ArticleOut,
     BodyBackfillResult,
@@ -18,9 +18,12 @@ from ..schemas import (
     TickerOut,
     TickerSyncResult,
     WatchlistRequest,
+    ReportCreate,
+    ReportOut,
 )
 from ..services.tickers import sync_tickers_from_finnhub
 from ..util import ensure_list, normalize_symbol, parse_symbols
+from ..services.reports import AISummaryService, ReportGenerationError
 
 
 router = APIRouter(prefix="/api", tags=["stock-news"])
@@ -71,6 +74,7 @@ async def add_symbols(
 async def delete_symbol(symbol: str, session: AsyncSession = Depends(get_session)) -> Response:
     normalized = normalize_symbol(symbol)
     await session.execute(delete(Article).where(Article.symbol == normalized))
+    await session.execute(delete(Report).where(Report.symbol == normalized))
     await session.execute(delete(WatchedSymbol).where(WatchedSymbol.symbol == normalized))
     await session.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -195,3 +199,56 @@ async def _ensure_symbols_exist(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="지원하지 않는 티커입니다.",
         )
+
+
+def _get_report_service(request: Request) -> AISummaryService:
+    service = getattr(request.app.state, "ai_summary_service", None)
+    if service is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="AI Summary service is not configured.",
+        )
+    return service
+
+
+@router.post("/reports/generate", response_model=ReportOut)
+async def generate_report(
+    payload: ReportCreate,
+    request: Request,
+) -> ReportOut:
+    service = _get_report_service(request)
+    try:
+        # Always use SMART_BRIEFING regardless of payload.type for now, or let service default
+        return await service.generate_report(payload.symbol, limit=payload.limit)
+    except ReportGenerationError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+
+
+@router.get("/reports/{report_id}", response_model=ReportOut)
+async def get_report(report_id: int, request: Request) -> ReportOut:
+    service = _get_report_service(request)
+    try:
+        return await service.get_report(report_id)
+    except ReportGenerationError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+
+
+@router.get("/reports", response_model=List[ReportOut])
+async def list_reports(
+    request: Request,
+    symbol: Optional[str] = Query(default=None),
+    limit: int = Query(default=10, ge=1, le=50),
+) -> List[ReportOut]:
+    service = _get_report_service(request)
+    return await service.list_reports(limit=limit, symbol=symbol)
+
+
+@router.post("/reports/aggregate", response_model=ReportOut)
+async def generate_aggregate_report(request: Request) -> ReportOut:
+    """Generate an aggregate briefing for all watchlist symbols."""
+    service = _get_report_service(request)
+    try:
+        return await service.generate_aggregate_report()
+    except ReportGenerationError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+

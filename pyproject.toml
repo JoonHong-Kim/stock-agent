@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "FastAPI service for aggregating stock news in real time."
 authors = ["Daniel Kim <daniel@example.com>"]
 readme = "README.md"
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -17,6 +18,7 @@ pydantic-settings = "^2.1.0"
 python-dotenv = "^1.0.1"
 playwright = "^1.41.0"
 psycopg = {version = "^3.1", extras = ["binary"]}
+openai = "^2.8.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"

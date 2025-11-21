@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, HttpUrl
@@ -63,3 +64,28 @@ class ArticleOut(BaseModel):
 class NewsPayload(BaseModel):
     symbol: str
     articles: List[ArticleOut]
+
+
+class ReportType(str, Enum):
+    """Report types - smart_briefing is the new unified type, others are legacy"""
+    SMART_BRIEFING = "smart_briefing"
+    # Legacy types for backward compatibility with existing DB records
+    MORNING_BRIEFING = "morning_briefing"
+    SENTIMENT_ACTION = "sentiment_action"
+    DEEP_DIVE = "deep_dive"
+
+
+class ReportCreate(BaseModel):
+    symbol: str = Field(..., examples=["AAPL"])
+    type: ReportType = Field(default=ReportType.SMART_BRIEFING)
+    limit: int = Field(default=20, ge=5, le=100)
+
+
+class ReportOut(BaseModel):
+    id: int
+    symbol: str
+    type: ReportType
+    content: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
