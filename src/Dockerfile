@@ -15,6 +15,6 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root
 RUN poetry run playwright install --with-deps chromium
 
-COPY . ./src
+COPY src ./src
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

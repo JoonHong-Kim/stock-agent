@@ -9,11 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from .config import get_settings
 from .db.session import SessionLocal, init_db
 from .streaming.dispatcher import ConnectionManager, NewsDispatcher
-from .news.fetcher import NewsFetcher, NewsStreamLoop
+from .news.fetcher import NewsFetcher, NewsStreamLoop, ArticleBodyFetcher
 from .services.tickers import sync_tickers_from_finnhub
-from .news.body_fetcher import ArticleBodyFetcher
 from .api.routes import router
 from .util import parse_symbols
+from .services.llm_service import LLMService
+from .services.price_service import PriceService
+from .services.reports import AISummaryService
 
 
 settings = get_settings()
@@ -39,6 +41,11 @@ dispatcher = NewsDispatcher(
 stream_loop = NewsStreamLoop(news_fetcher, dispatcher)
 app.state.dispatcher = dispatcher
 app.state.body_fetcher = article_body_fetcher
+llm_base_url = str(settings.llm_base_url) if settings.llm_base_url else None
+llm_service = LLMService(settings.llm_api_key, llm_base_url, settings.llm_model)
+price_service = PriceService()
+ai_summary_service = AISummaryService(SessionLocal, llm_service, price_service)
+app.state.ai_summary_service = ai_summary_service
 
 
 @app.on_event("startup")
