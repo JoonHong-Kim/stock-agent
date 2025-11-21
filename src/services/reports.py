@@ -390,9 +390,10 @@ class AISummaryService:
         """Fallback content for aggregate reports when LLM fails."""
         individual_insights = {}
         for symbol, data in symbol_insights.items():
+            price_change = data.get("price_change") or 0.0
             individual_insights[symbol] = {
                 "sentiment": 50,
-                "one_liner": f"기사 {data.get('article_count', 0)}건, 변동률 {data.get('price_change', 0):+.2f}%"
+                "one_liner": f"기사 {data.get('article_count', 0)}건, 변동률 {price_change:+.2f}%"
             }
 
         return json.dumps({
