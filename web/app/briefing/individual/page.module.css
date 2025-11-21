@@ -1,0 +1,201 @@
+.heroSection {
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 10;
+}
+
+.heroBadge {
+    margin-bottom: 1rem;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    background: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.heroDescription {
+    font-size: 1.1rem;
+    max-width: 600px;
+    color: #94a3b8;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.select {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    min-width: 200px;
+}
+
+.generateButton {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+}
+
+.errorMsg {
+    color: #f87171;
+    margin-top: 1rem;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.contentPanel {
+    padding: 2rem;
+}
+
+.contentHeader {
+    margin-bottom: 2rem;
+}
+
+.contentTitle {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.contentSubtitle {
+    color: #94a3b8;
+}
+
+.summaryList {
+    list-style: none;
+    padding: 0;
+}
+
+.summaryItem {
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    display: flex;
+    gap: 1rem;
+}
+
+.summaryNumber {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.outlookSection {
+    margin-top: 2rem;
+}
+
+.sectionTitle {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.outlookText {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #cbd5e1;
+}
+
+.emptyState {
+    padding: 4rem;
+    text-align: center;
+    color: #64748b;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sentimentPanel {
+    padding: 2rem;
+    text-align: center;
+}
+
+.sentimentTitle {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+}
+
+.sentimentChart {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.sentimentSvg {
+    transform: rotate(-90deg);
+}
+
+.sentimentValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.sentimentReason {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.riskPanel {
+    padding: 2rem;
+}
+
+.riskTitle {
+    font-size: 1.2rem;
+    color: #f87171;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.riskList {
+    padding-left: 1.2rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+}
+
+.riskItem {
+    margin-bottom: 0.5rem;
+}
+
+.timestamp {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #64748b;
+}

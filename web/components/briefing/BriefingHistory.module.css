@@ -1,0 +1,78 @@
+.container {
+    padding: 1.5rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.title {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dateLabel {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #334155;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.item {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid transparent;
+    color: #cbd5e1;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.itemActive {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+}
+
+.item:hover:not(.itemActive) {
+    background: rgba(30, 41, 59, 0.5);
+}
+
+.itemLabel {
+    font-weight: 400;
+}
+
+.itemLabelActive {
+    font-weight: 600;
+}
+
+.itemTime {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.itemTimeActive {
+    color: #93c5fd;
+}
