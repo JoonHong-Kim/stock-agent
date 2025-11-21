@@ -13,6 +13,8 @@ import { BriefingHistory } from "@/components/briefing/BriefingHistory";
 import { WatchlistEntry } from "@/types/news";
 import { Report, SmartBriefingContent } from "@/types/reports";
 
+import styles from "./page.module.css";
+
 export default function DailyBriefingPage() {
   const [watchlist, setWatchlist] = useState<WatchlistEntry[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<string>("");
@@ -93,59 +95,24 @@ export default function DailyBriefingPage() {
 
   return (
     <AppShell active="individual" actionHref="/" actionLabel="실시간 스트림">
-      <section
-        className="glass-panel"
-        style={{
-          padding: "3rem",
-          background:
-            "linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%)",
-          position: "relative",
-          overflow: "hidden",
-          marginBottom: "2rem",
-        }}
-      >
-        <div style={{ position: "relative", zIndex: 10 }}>
-          <Badge tone="neutral" style={{ marginBottom: "1rem" }}>
+      <section className={`glass-panel ${styles.heroSection}`}>
+        <div className={styles.heroContent}>
+          <Badge tone="neutral" className={styles.heroBadge}>
             Smart Briefing
           </Badge>
-          <h1
-            style={{
-              fontSize: "3rem",
-              marginBottom: "1.5rem",
-              background: "var(--gradient-primary)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
+          <h1 className={styles.heroTitle}>
             AI 투자 브리핑
           </h1>
-          <p
-            style={{
-              fontSize: "1.1rem",
-              maxWidth: "600px",
-              color: "#94a3b8",
-              marginBottom: "2.5rem",
-              lineHeight: "1.6",
-            }}
-          >
+          <p className={styles.heroDescription}>
             복잡한 뉴스 데이터를 AI가 분석하여 핵심 요약, 투자 심리, 리스크 요인을
             한눈에 보여드립니다.
           </p>
 
-          <div className="controls" style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <div className={styles.controls}>
             <select
               value={selectedSymbol}
               onChange={(e) => setSelectedSymbol(e.target.value)}
-              style={{
-                background: "rgba(30, 41, 59, 0.5)",
-                border: "1px solid rgba(148, 163, 184, 0.2)",
-                color: "white",
-                padding: "0.8rem 1.5rem",
-                borderRadius: "0.5rem",
-                fontSize: "1rem",
-                outline: "none",
-                minWidth: "200px",
-              }}
+              className={styles.select}
             >
               {watchlist.length === 0 && <option value="">워치리스트 없음</option>}
               {watchlist.map((w) => (
@@ -158,79 +125,53 @@ export default function DailyBriefingPage() {
               variant="solid"
               onClick={handleGenerate}
               disabled={!selectedSymbol || isLoading}
-              style={{ padding: "0.8rem 2rem", fontSize: "1rem" }}
+              className={styles.generateButton}
             >
               {isLoading ? "분석 중..." : "브리핑 생성"}
             </Button>
           </div>
           {error && (
-            <p style={{ color: "#f87171", marginTop: "1rem" }}>{error}</p>
+            <p className={styles.errorMsg}>{error}</p>
           )}
         </div>
       </section>
 
-      <div className="dashboard-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "2rem" }}>
+      <div className={`dashboard-grid ${styles.gridContainer}`}>
         {parsedContent ? (
-          <section className="glass-panel" style={{ padding: "2rem" }}>
-            <header style={{ marginBottom: "2rem" }}>
-              <h2 style={{ fontSize: "1.8rem", marginBottom: "0.5rem" }}>핵심 요약</h2>
-              <p style={{ color: "#94a3b8" }}>AI가 선별한 주요 이슈입니다.</p>
+          <section className={`glass-panel ${styles.contentPanel}`}>
+            <header className={styles.contentHeader}>
+              <h2 className={styles.contentTitle}>핵심 요약</h2>
+              <p className={styles.contentSubtitle}>AI가 선별한 주요 이슈입니다.</p>
             </header>
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul className={styles.summaryList}>
               {parsedContent.summary.map((item, idx) => (
                 <li
                   key={idx}
-                  className="glass-card"
-                  style={{
-                    padding: "1.5rem",
-                    marginBottom: "1rem",
-                    fontSize: "1.1rem",
-                    lineHeight: "1.6",
-                    display: "flex",
-                    gap: "1rem",
-                  }}
+                  className={`glass-card ${styles.summaryItem}`}
                 >
-                  <span
-                    style={{
-                      color: "var(--color-primary)",
-                      fontWeight: "bold",
-                      fontSize: "1.2rem",
-                    }}
-                  >
+                  <span className={styles.summaryNumber}>
                     {idx + 1}
                   </span>
                   {item}
                 </li>
               ))}
             </ul>
-            <div style={{ marginTop: "2rem" }}>
-              <h3 style={{ fontSize: "1.4rem", marginBottom: "1rem" }}>시장 전망</h3>
-              <p style={{ fontSize: "1.1rem", lineHeight: "1.7", color: "#cbd5e1" }}>
+            <div className={styles.outlookSection}>
+              <h3 className={styles.sectionTitle}>시장 전망</h3>
+              <p className={styles.outlookText}>
                 {parsedContent.market_outlook}
               </p>
             </div>
           </section>
         ) : (
-          <div
-            className="glass-panel"
-            style={{
-              padding: "4rem",
-              textAlign: "center",
-              color: "#64748b",
-              fontSize: "1.1rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "400px"
-            }}
-          >
+          <div className={`glass-panel ${styles.emptyState}`}>
             {selectedSymbol
               ? "브리핑 생성 버튼을 눌러 분석을 시작하거나,\n오른쪽에서 지난 브리핑을 선택하세요."
               : "워치리스트에서 종목을 선택해주세요."}
           </div>
         )}
 
-        <aside style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+        <aside className={styles.sidebar}>
           <BriefingHistory
             reports={reportHistory}
             currentReportId={report?.id || null}
@@ -240,10 +181,10 @@ export default function DailyBriefingPage() {
 
           {parsedContent && (
             <>
-              <section className="glass-panel" style={{ padding: "2rem", textAlign: "center" }}>
-                <h3 style={{ fontSize: "1.2rem", color: "#94a3b8", marginBottom: "1rem" }}>투자 심리 (Sentiment)</h3>
-                <div style={{ position: "relative", width: "150px", height: "150px", margin: "0 auto" }}>
-                  <svg viewBox="0 0 36 36" style={{ transform: "rotate(-90deg)" }}>
+              <section className={`glass-panel ${styles.sentimentPanel}`}>
+                <h3 className={styles.sentimentTitle}>투자 심리 (Sentiment)</h3>
+                <div className={styles.sentimentChart}>
+                  <svg viewBox="0 0 36 36" className={styles.sentimentSvg}>
                     <path
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                       fill="none"
@@ -259,31 +200,26 @@ export default function DailyBriefingPage() {
                     />
                   </svg>
                   <div
+                    className={styles.sentimentValue}
                     style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      fontSize: "2rem",
-                      fontWeight: "bold",
                       color: sentimentColor(parsedContent.sentiment_score),
                     }}
                   >
                     {parsedContent.sentiment_score}
                   </div>
                 </div>
-                <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "#cbd5e1" }}>
+                <p className={styles.sentimentReason}>
                   {parsedContent.sentiment_reason}
                 </p>
               </section>
 
-              <section className="glass-panel" style={{ padding: "2rem" }}>
-                <h3 style={{ fontSize: "1.2rem", color: "#f87171", marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <section className={`glass-panel ${styles.riskPanel}`}>
+                <h3 className={styles.riskTitle}>
                   <span>⚠</span> 리스크 요인
                 </h3>
-                <ul style={{ paddingLeft: "1.2rem", color: "#cbd5e1", lineHeight: "1.6" }}>
+                <ul className={styles.riskList}>
                   {parsedContent.key_risks.map((risk, idx) => (
-                    <li key={idx} style={{ marginBottom: "0.5rem" }}>
+                    <li key={idx} className={styles.riskItem}>
                       {risk}
                     </li>
                   ))}
@@ -291,7 +227,7 @@ export default function DailyBriefingPage() {
               </section>
 
               {report && (
-                <div style={{ textAlign: "right", fontSize: "0.8rem", color: "#64748b" }}>
+                <div className={styles.timestamp}>
                   Generated {formatDistanceToNow(new Date(report.created_at), { addSuffix: true, locale: ko })}
                 </div>
               )}

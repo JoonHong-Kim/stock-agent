@@ -1,0 +1,220 @@
+.heroSection {
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 10;
+}
+
+.heroBadge {
+    margin-bottom: 1rem;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.heroDescription {
+    font-size: 1.1rem;
+    max-width: 600px;
+    color: #94a3b8;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.generateButton {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+}
+
+.errorMsg {
+    color: #f87171;
+    margin-top: 1rem;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.contentPanel {
+    padding: 2rem;
+}
+
+.contentHeader {
+    margin-bottom: 2rem;
+}
+
+.contentTitle {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.contentSubtitle {
+    color: #94a3b8;
+}
+
+.marketSummaryCard {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.marketSummaryText {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #cbd5e1;
+}
+
+.sectionTitle {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.themeList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.themeItem {
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.themeBullet {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.insightsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.insightCard {
+    padding: 1.5rem;
+}
+
+.insightHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.insightSymbol {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.insightBadge {
+    font-size: 0.9rem;
+}
+
+.insightText {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.emptyState {
+    padding: 4rem;
+    text-align: center;
+    color: #64748b;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sentimentPanel {
+    padding: 2rem;
+    text-align: center;
+}
+
+.sentimentTitle {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+}
+
+.sentimentChart {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.sentimentSvg {
+    transform: rotate(-90deg);
+}
+
+.sentimentValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.sentimentReason {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.moversPanel {
+    padding: 2rem;
+}
+
+.moversTitle {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.moversList {
+    list-style: none;
+    padding: 0;
+}
+
+.moverItem {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    background: rgba(30, 41, 59, 0.3);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.timestamp {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #64748b;
+}

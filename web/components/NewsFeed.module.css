@@ -1,0 +1,133 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.liveBadge {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.liveDot {
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+.headline {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.symbolTags {
+    margin-top: 0.8rem;
+}
+
+.symbolChip {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-secondary);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.symbolChipActive {
+    background: var(--color-primary);
+    color: white;
+}
+
+.statusPill {
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+}
+
+.feedList {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.emptyState {
+    padding: 3rem;
+    text-align: center;
+    color: #64748b;
+}
+
+.articleCard {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.articleHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.source {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.articleLink {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.articleTitle {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: white;
+}
+
+.articleSummary {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+.articleTime {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}

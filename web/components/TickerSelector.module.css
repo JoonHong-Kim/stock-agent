@@ -1,0 +1,192 @@
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.refreshButton {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+}
+
+.form {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.inputWrapper {
+    position: relative;
+    flex: 1;
+}
+
+.input {
+    width: 100%;
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.input:focus {
+    border-color: var(--color-primary);
+}
+
+.input:not(:focus) {
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: #1e293b;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 0.5rem;
+    z-index: 20;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.suggestionItem {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.suggestionSymbol {
+    font-weight: 600;
+}
+
+.suggestionName {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.addButton {
+    padding: 0.6rem 1rem;
+}
+
+.errorBanner {
+    margin-bottom: 1rem;
+    color: #f87171;
+    font-size: 0.9rem;
+}
+
+.tickerList {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    list-style: none;
+    padding: 0;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 2rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.tickerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    transition: background 0.2s;
+}
+
+.tickerButton {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    text-align: left;
+}
+
+.tickerButtonSelected {
+    color: white;
+    font-weight: 600;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #475569;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.checkboxSelected {
+    border: none;
+    background: var(--color-primary);
+}
+
+.checkmark {
+    color: white;
+    font-size: 12px;
+}
+
+.removeButton {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.removeButton:hover {
+    opacity: 1;
+}
+
+.removeButton:not(:hover) {
+    opacity: 0.6;
+}

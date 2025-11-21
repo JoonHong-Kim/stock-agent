@@ -1,0 +1,77 @@
+.heroSection {
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 10;
+}
+
+.heroBadge {
+    margin-bottom: 1rem;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.heroDescription {
+    font-size: 1.1rem;
+    max-width: 600px;
+    color: #94a3b8;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.heroMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.heroMetaText {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.heroActions {
+    display: flex;
+    gap: 1rem;
+}
+
+.heroDecoration {
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.streamPanel {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.watchlistPanel {
+    height: 600px;
+    position: sticky;
+    top: 6rem;
+}
+
+.streamFeed {
+    /* No specific styles needed here as it's handled by the component, 
+     but keeping class for potential future use or overrides */
+}
