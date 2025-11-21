@@ -333,7 +333,7 @@ class AISummaryService:
         """Build context for aggregate report from multiple symbols."""
         lines: List[str] = []
         for symbol, data in symbol_insights.items():
-            price_change = data.get("price_change", 0)
+            price_change = data.get("price_change") or 0.0
             article_count = data.get("article_count", 0)
             lines.append(f"[{symbol}] 변동률: {price_change:+.2f}%, 기사 수: {article_count}")
             # Add top 2 article headlines for context
