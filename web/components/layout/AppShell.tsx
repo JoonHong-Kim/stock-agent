@@ -19,7 +19,7 @@ const NAV_LINKS = [
 export function AppShell({
   active,
   children,
-  actionHref = "/daily-briefing",
+  actionHref = "/briefing/aggregate",
   actionLabel = "AI Command",
 }: Props) {
   return (
