@@ -54,7 +54,10 @@ class AISummaryService:
                 raise ReportGenerationError(
                     "최근 기사 데이터가 없어 리포트를 생성할 수 없습니다."
                 )
-            price = await self._price_service.fetch_quote(normalized)
+            try:
+                price = await self._price_service.fetch_quote(normalized)
+            except Exception:
+                price = PriceSnapshot(symbol=normalized, current=None, open_price=None, previous_close=None, percent_change=None)
             article_context = self._build_article_context(articles)
             user_prompt = self._build_report_prompt(
                 normalized, article_context, price, len(articles)
@@ -111,7 +114,10 @@ class AISummaryService:
                     if articles:
                         all_articles.extend(articles)
                         # Get price for each symbol
-                        price = await self._price_service.fetch_quote(symbol)
+                        try:
+                            price = await self._price_service.fetch_quote(symbol)
+                        except Exception:
+                            price = PriceSnapshot(symbol=symbol, current=None, open_price=None, previous_close=None, percent_change=None)
                         symbol_insights[symbol] = {
                             "article_count": len(articles),
                             "price_change": price.percent_change if price else 0,

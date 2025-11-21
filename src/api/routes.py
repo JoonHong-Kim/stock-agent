@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..config import get_settings
 from ..db.session import get_session
-from ..db.models import Article, Ticker, WatchedSymbol
+from ..db.models import Article, Report, Ticker, WatchedSymbol
 from ..schemas import (
     ArticleOut,
     BodyBackfillResult,
@@ -74,6 +74,7 @@ async def add_symbols(
 async def delete_symbol(symbol: str, session: AsyncSession = Depends(get_session)) -> Response:
     normalized = normalize_symbol(symbol)
     await session.execute(delete(Article).where(Article.symbol == normalized))
+    await session.execute(delete(Report).where(Report.symbol == normalized))
     await session.execute(delete(WatchedSymbol).where(WatchedSymbol.symbol == normalized))
     await session.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
