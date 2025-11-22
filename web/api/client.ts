@@ -4,7 +4,7 @@ import { MarketSummary } from "@/types/market";
 import { handleHttpResponse } from "./http";
 
 export async function fetchMarketSummary(): Promise<MarketSummary> {
-  const res = await fetch(`${env.backendHttpUrl}/market/summary`);
+  const res = await fetch(`${env.backendHttpUrl}/api/market/summary`);
   return handleHttpResponse(res);
 }
 
