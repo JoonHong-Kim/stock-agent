@@ -88,9 +88,21 @@
     align-items: center;
 }
 
+.moverMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
 .moverSymbol {
     font-weight: bold;
     color: #f1f5f9;
+    font-size: 0.95rem;
+}
+
+.moverPrice {
+    font-size: 0.8rem;
+    color: #94a3b8;
 }
 
 .moverChange {

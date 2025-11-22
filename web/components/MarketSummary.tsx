@@ -42,7 +42,12 @@ export function MarketSummary({ data, isLoading }: MarketSummaryProps) {
                         {data.top_gainers.length > 0 ? (
                             data.top_gainers.map((mover) => (
                                 <div key={mover.symbol} className={`glass-card ${styles.moverCard}`}>
-                                    <span className={styles.moverSymbol}>{mover.symbol}</span>
+                                    <div className={styles.moverMeta}>
+                                        <span className={styles.moverSymbol}>{mover.symbol}</span>
+                                        <span className={styles.moverPrice}>
+                                            {mover.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
                                     <span className={`${styles.moverChange} ${styles.up}`}>
                                         +{mover.change_percent.toFixed(2)}%
                                     </span>
@@ -57,7 +62,12 @@ export function MarketSummary({ data, isLoading }: MarketSummaryProps) {
                         {data.top_losers.length > 0 ? (
                             data.top_losers.map((mover) => (
                                 <div key={mover.symbol} className={`glass-card ${styles.moverCard}`}>
-                                    <span className={styles.moverSymbol}>{mover.symbol}</span>
+                                    <div className={styles.moverMeta}>
+                                        <span className={styles.moverSymbol}>{mover.symbol}</span>
+                                        <span className={styles.moverPrice}>
+                                            {mover.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
                                     <span className={`${styles.moverChange} ${styles.down}`}>
                                         {mover.change_percent.toFixed(2)}%
                                     </span>
