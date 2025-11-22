@@ -1,5 +1,4 @@
-from __future__ import annotations
-
+import asyncio
 from dataclasses import dataclass
 from typing import Optional
 
@@ -22,6 +21,9 @@ class PriceSnapshot:
 
 class PriceService:
     """Fetches latest quote data for a symbol using Finnhub."""
+    
+    # Shared semaphore to limit concurrency across all instances/requests
+    _semaphore = asyncio.Semaphore(5)
 
     async def fetch_quote(self, symbol: str) -> PriceSnapshot:
         if not settings.finnhub_api_key:
@@ -84,13 +86,9 @@ class PriceService:
                 })
 
         movers = []
-        import asyncio
         
-        # Limit concurrency to avoid overwhelming the API or hitting rate limits
-        semaphore = asyncio.Semaphore(5)
-
         async def fetch_with_semaphore(sym):
-            async with semaphore:
+            async with self._semaphore:
                 return await self.fetch_quote(sym)
 
         tasks = [fetch_with_semaphore(sym) for sym in watchlist_symbols]
