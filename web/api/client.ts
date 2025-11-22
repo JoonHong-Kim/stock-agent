@@ -5,10 +5,7 @@ import { handleHttpResponse } from "./http";
 
 export async function fetchMarketSummary(): Promise<MarketSummary> {
   const res = await fetch(`${env.backendHttpUrl}/market/summary`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch market summary");
-  }
-  return res.json();
+  return handleHttpResponse(res);
 }
 
 export async function fetchWatchlist(): Promise<WatchlistEntry[]> {
