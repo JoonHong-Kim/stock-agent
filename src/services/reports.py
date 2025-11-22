@@ -132,9 +132,18 @@ class AISummaryService:
             if not all_articles:
                 raise ReportGenerationError("워치리스트 종목들의 최근 기사가 없습니다.")
 
+            # Fetch market indices
+            indices = {}
+            for symbol, name in [("^IXIC", "Nasdaq"), ("^GSPC", "S&P 500")]:
+                try:
+                    price = await self._price_service.fetch_quote(symbol)
+                    indices[name] = price
+                except Exception:
+                    indices[name] = PriceSnapshot(symbol=symbol, current=None, open_price=None, previous_close=None, percent_change=None)
+
             # Build aggregate context
             aggregate_context = self._build_aggregate_context(symbol_insights)
-            user_prompt = self._build_aggregate_prompt(aggregate_context, len(symbols))
+            user_prompt = self._build_aggregate_prompt(aggregate_context, len(symbols), indices)
             system_prompt = self._build_system_prompt()
 
             try:
@@ -348,11 +357,23 @@ class AISummaryService:
         return "\n".join(lines)
 
     @staticmethod
-    def _build_aggregate_prompt(aggregate_context: str, symbol_count: int) -> str:
+    def _build_aggregate_prompt(aggregate_context: str, symbol_count: int, indices: dict[str, PriceSnapshot]) -> str:
         """Build prompt for aggregate briefing."""
+        indices_text = "\n".join(
+            [
+                f"- {name}: {price.current:,.2f} ({price.percent_change:+.2f}%)"
+                if price.current is not None and price.percent_change is not None
+                else f"- {name}: 데이터 없음"
+                for name, price in indices.items()
+            ]
+        )
+
         header = textwrap.dedent(f"""
             워치리스트 종합 브리핑
             감시 종목 수: {symbol_count}
+
+            주요 시장 지수:
+            {indices_text}
 
             종목별 현황:
             {aggregate_context}
@@ -365,7 +386,19 @@ class AISummaryService:
             {
                 "overall_sentiment": 60,  // 전체 워치리스트의 평균적인 투자 심리 (0-100)
                 "overall_sentiment_reason": "전체 심리 점수 산정 근거",
-                "market_summary": "워치리스트 종목들의 전반적인 흐름과 시장 상황 요약 (3문장 이내)",
+                "market_summary": "주요 시장 지수(나스닥, S&P500)와 워치리스트 종목들의 전반적인 흐름 요약 (3문장 이내)",
+                "market_indices": [
+                    {
+                        "name": "Nasdaq",
+                        "price": 14000.00,
+                        "change": 1.25
+                    },
+                    {
+                        "name": "S&P 500",
+                        "price": 4500.00,
+                        "change": 0.50
+                    }
+                ],
                 "top_movers": ["AAPL", "TSLA"],  // 가장 큰 변동을 보인 종목 (최대 3개)
                 "key_themes": [
                     "AI 기술 발전으로 관련주 상승",
@@ -387,6 +420,7 @@ class AISummaryService:
             1. key_themes는 2-4개 항목
             2. individual_insights는 모든 워치리스트 종목 포함
             3. 모든 텍스트는 한국어로 작성
+            4. market_indices의 값은 입력된 데이터를 그대로 사용
         """).strip()
 
         return f"{header}\n\n지시사항:\n{instructions}"

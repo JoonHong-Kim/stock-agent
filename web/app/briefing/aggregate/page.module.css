@@ -64,6 +64,36 @@
     color: #94a3b8;
 }
 
+.indicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.indexCard {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.indexName {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.indexPrice {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f1f5f9;
+}
+
+.indexChange {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 .marketSummaryCard {
     padding: 1.5rem;
     margin-bottom: 2rem;

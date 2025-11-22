@@ -20,6 +20,8 @@ class SymbolOut(SymbolBase):
     model_config = {"from_attributes": True}
 
 
+from .market import MarketIndex, MarketSummaryOut, TopMover
+
 class WatchlistRequest(BaseModel):
     symbols: List[str]
 
