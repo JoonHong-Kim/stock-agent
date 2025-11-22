@@ -33,9 +33,7 @@ export async function removeFromWatchlist(symbol: string): Promise<void> {
       method: "DELETE",
     }
   );
-  if (!response.ok) {
-    throw new Error("Failed to delete symbol");
-  }
+  return handleHttpResponse(response);
 }
 
 export async function fetchNews(symbols: string[]): Promise<NewsArticle[]> {
