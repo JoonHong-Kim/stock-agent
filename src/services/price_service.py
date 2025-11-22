@@ -71,10 +71,20 @@ class PriceService:
         ]
         
         for symbol, name, proxy in index_targets:
-            snapshot = await self.fetch_quote(symbol)
-            # If main symbol fails (price is 0 or None), try proxy
+            snapshot = None
+            try:
+                snapshot = await self.fetch_quote(symbol)
+            except Exception:
+                # If primary symbol fails (e.g. 403 Forbidden on free tier), ignore and try proxy
+                pass
+
+            # If main symbol fails (price is 0 or None or exception occurred), try proxy
             if not snapshot or snapshot.current is None or snapshot.current == 0:
-                snapshot = await self.fetch_quote(proxy)
+                try:
+                    snapshot = await self.fetch_quote(proxy)
+                except Exception:
+                    # If proxy also fails, just skip this index
+                    snapshot = None
             
             if snapshot and snapshot.current is not None:
                 indices.append({
