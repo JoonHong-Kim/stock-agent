@@ -60,26 +60,21 @@ class PriceService:
     async def fetch_market_summary(self, watchlist_symbols: list[str]) -> dict:
         """Fetch indices and calculate top movers from watchlist."""
         indices = []
-        # Use ETFs as proxies for indices if direct index data is unavailable on free tier
-        # ^IXIC -> QQQ (Nasdaq 100 ETF), ^GSPC -> SPY (S&P 500 ETF)
-        # We try real indices first, then fallback to ETFs if needed.
-        # Actually, for simplicity and reliability on free plans, let's just use the ETFs or well-known proxies.
-        # But let's try both for robustness.
-        index_targets = [
-            ("^IXIC", "Nasdaq", "QQQ"), 
-            ("^GSPC", "S&P 500", "SPY")
-        ]
         
-        for symbol, name, proxy in index_targets:
+        # Use configured indices and proxies
+        for symbol in settings.market_indices:
+            name = settings.market_index_names.get(symbol, symbol)
+            proxy = settings.market_index_proxies.get(symbol)
+            
             snapshot = None
             try:
                 snapshot = await self.fetch_quote(symbol)
             except Exception:
-                # If primary symbol fails (e.g. 403 Forbidden on free tier), ignore and try proxy
+                # If primary symbol fails, ignore and try proxy
                 pass
 
             # If main symbol fails (price is 0 or None or exception occurred), try proxy
-            if not snapshot or snapshot.current is None or snapshot.current == 0:
+            if (not snapshot or snapshot.current is None or snapshot.current == 0) and proxy:
                 try:
                     snapshot = await self.fetch_quote(proxy)
                 except Exception:
@@ -88,7 +83,7 @@ class PriceService:
             
             if snapshot and snapshot.current is not None:
                 indices.append({
-                    "symbol": symbol, # Keep original symbol name for display if desired, or use name
+                    "symbol": symbol,
                     "name": name,
                     "price": snapshot.current,
                     "change": (snapshot.current - (snapshot.previous_close or 0)),
@@ -99,7 +94,10 @@ class PriceService:
         
         async def fetch_with_semaphore(sym):
             async with self._semaphore:
-                return await self.fetch_quote(sym)
+                try:
+                    return await self.fetch_quote(sym)
+                except Exception:
+                    return None
 
         tasks = [fetch_with_semaphore(sym) for sym in watchlist_symbols]
         snapshots = await asyncio.gather(*tasks, return_exceptions=True)

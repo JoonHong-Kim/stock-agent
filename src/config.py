@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import Field, HttpUrl
 from pydantic_settings import BaseSettings
@@ -32,6 +32,15 @@ class Settings(BaseSettings):
     llm_base_url: Optional[HttpUrl] = Field(default="https://api.openai.com/v1")
     llm_provider: str = Field(default="openai")
     report_article_lookback_days: int = Field(default=3, ge=1, le=14)
+    market_indices: List[str] = Field(
+        default_factory=lambda: ["^IXIC", "^GSPC"]
+    )
+    market_index_names: Dict[str, str] = Field(
+        default_factory=lambda: {"^IXIC": "Nasdaq", "^GSPC": "S&P 500"}
+    )
+    market_index_proxies: Dict[str, str] = Field(
+        default_factory=lambda: {"^IXIC": "QQQ", "^GSPC": "SPY"}
+    )
 
     model_config = {
         "env_file": ".env",
