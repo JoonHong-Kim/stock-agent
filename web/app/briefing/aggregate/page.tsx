@@ -71,7 +71,7 @@ export default function AggregateBriefingPage() {
     };
 
     return (
-        <AppShell active="aggregate" actionHref="/" actionLabel="실시간 스트림">
+        <AppShell active="aggregate">
             <section className={`glass-panel ${styles.heroSection}`}>
                 <div className={styles.heroContent}>
                     <Badge tone="neutral" className={styles.heroBadge}>
@@ -103,6 +103,23 @@ export default function AggregateBriefingPage() {
                             <h2 className={styles.contentTitle}>시장 요약</h2>
                             <p className={styles.contentSubtitle}>워치리스트 종목들의 전반적인 흐름</p>
                         </header>
+
+                        {parsedContent.market_indices && parsedContent.market_indices.length > 0 && (
+                            <div className={styles.indicesGrid}>
+                                {parsedContent.market_indices.map((index) => (
+                                    <div key={index.name} className={`glass-card ${styles.indexCard}`}>
+                                        <div className={styles.indexName}>{index.name}</div>
+                                        <div className={styles.indexPrice}>
+                                            {index.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </div>
+                                        <div className={styles.indexChange} style={{ color: index.change >= 0 ? '#34d399' : '#f87171' }}>
+                                            {index.change > 0 ? '+' : ''}{index.change.toFixed(2)}%
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         <div className={`glass-card ${styles.marketSummaryCard}`}>
                             <p className={styles.marketSummaryText}>
                                 {parsedContent.market_summary}
@@ -218,3 +235,4 @@ export default function AggregateBriefingPage() {
         </AppShell>
     );
 }
+

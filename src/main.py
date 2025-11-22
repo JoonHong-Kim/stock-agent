@@ -46,6 +46,7 @@ llm_service = LLMService(settings.llm_api_key, llm_base_url, settings.llm_model)
 price_service = PriceService()
 ai_summary_service = AISummaryService(SessionLocal, llm_service, price_service)
 app.state.ai_summary_service = ai_summary_service
+app.state.price_service = price_service
 
 
 @app.on_event("startup")

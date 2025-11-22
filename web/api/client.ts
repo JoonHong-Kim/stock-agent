@@ -1,6 +1,12 @@
 import { env } from "@/config/env";
 import { NewsArticle, TickerOption, WatchlistEntry } from "@/types/news";
+import { MarketSummary } from "@/types/market";
 import { handleHttpResponse } from "./http";
+
+export async function fetchMarketSummary(): Promise<MarketSummary> {
+  const res = await fetch(`${env.backendHttpUrl}/api/market/summary`);
+  return handleHttpResponse(res);
+}
 
 export async function fetchWatchlist(): Promise<WatchlistEntry[]> {
   const response = await fetch(`${env.backendHttpUrl}/api/watchlist`, {
@@ -27,9 +33,7 @@ export async function removeFromWatchlist(symbol: string): Promise<void> {
       method: "DELETE",
     }
   );
-  if (!response.ok) {
-    throw new Error("Failed to delete symbol");
-  }
+  return handleHttpResponse(response);
 }
 
 export async function fetchNews(symbols: string[]): Promise<NewsArticle[]> {

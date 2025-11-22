@@ -25,6 +25,11 @@ export interface AggregateBriefingContent {
   overall_sentiment: number;
   overall_sentiment_reason: string;
   market_summary: string;
+  market_indices?: {
+    name: string;
+    price: number;
+    change: number;
+  }[];
   top_movers: string[];
   key_themes: string[];
   individual_insights: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   addToWatchlist,
@@ -8,6 +8,7 @@ import {
   fetchTickers,
   refreshNewsNow,
   removeFromWatchlist,
+  fetchMarketSummary,
 } from "@/api/client";
 import { NewsFeed } from "@/components/NewsFeed";
 import { TickerSelector } from "@/components/TickerSelector";
@@ -16,6 +17,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { useNewsStream } from "@/hook/useNewsStream";
 import { TickerOption, WatchlistEntry } from "@/types/news";
+import { MarketSummary } from "@/components/MarketSummary";
+import { MarketSummary as MarketSummaryType } from "@/types/market";
 
 import styles from "./page.module.css";
 
@@ -37,7 +40,17 @@ export default function HomePage() {
   const previousArticleCount = useRef(0);
   const [newsDelta, setNewsDelta] = useState(0);
 
+  // Market Summary State
+  const [marketSummary, setMarketSummary] = useState<MarketSummaryType | null>(null);
+  const [isMarketLoading, setIsMarketLoading] = useState(true);
+
   useEffect(() => {
+    // Fetch market summary
+    fetchMarketSummary()
+      .then(setMarketSummary)
+      .catch((err) => console.error("Failed to fetch market summary", err))
+      .finally(() => setIsMarketLoading(false));
+
     fetchWatchlist()
       .then((entries) => {
         const symbols = entries.map((entry) => entry.symbol);
@@ -68,6 +81,7 @@ export default function HomePage() {
     setNewsDelta(articles.length - previous);
     previousArticleCount.current = articles.length;
   }, [articles.length]);
+
   const handleSearchTickers = useCallback((query: string) => {
     setTickerQuery(query.trim());
   }, []);
@@ -127,7 +141,7 @@ export default function HomePage() {
   const streamStatusText = STATUS_TEXT[status] ?? STATUS_TEXT.idle;
 
   return (
-    <AppShell active="stream" actionHref="/daily-briefing" actionLabel="Daily Briefing">
+    <AppShell active="stream">
       <section className={`glass-panel ${styles.heroSection}`}>
         <div className={styles.heroContent}>
           <Badge tone="neutral" className={styles.heroBadge}>Real-Time Stream</Badge>
@@ -149,11 +163,16 @@ export default function HomePage() {
               >
                 {isRefreshing ? "새로고침 중..." : "스트림 새로고침"}
               </Button>
-              <ButtonLink variant="secondary" href="/daily-briefing">
+              <ButtonLink variant="secondary" href="/briefing/aggregate">
                 Daily Briefing 보러가기
               </ButtonLink>
             </div>
           </div>
+        </div>
+
+        {/* Market Summary */}
+        <div className={styles.marketSummaryWrapper}>
+          <MarketSummary data={marketSummary} isLoading={isMarketLoading} />
         </div>
 
         {/* Decorative background element */}

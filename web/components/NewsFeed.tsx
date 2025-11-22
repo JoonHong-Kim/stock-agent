@@ -51,12 +51,14 @@ export function NewsFeed({
   return (
     <section className={`glass-panel ${styles.container} ${className ?? ""}`.trim()}>
       <header className={`panel-header ${styles.header}`}>
-        <div>
+        <div className={styles.headerContent}>
           <div className={styles.titleRow}>
-            <span className={styles.liveBadge}>
-              <span className={styles.liveDot} />
-              LIVE
-            </span>
+            {status === "open" && (
+              <span className={styles.liveBadge}>
+                <span className={styles.liveDot} />
+                LIVE
+              </span>
+            )}
             <h2 className="panel-title">뉴스 피드</h2>
           </div>
           <p className={styles.headline}>{headline}</p>
@@ -77,9 +79,11 @@ export function NewsFeed({
             </div>
           )}
         </div>
-        <span className={`status-pill ${status} ${styles.statusPill}`}>
-          {statusText ?? statusMap[status]}
-        </span>
+        {status !== "open" && (
+          <span className={`status-pill ${status} ${styles.statusPill}`}>
+            {statusText ?? statusMap[status]}
+          </span>
+        )}
       </header>
       <ul className={`feed-list ${styles.feedList}`}>
         {visibleArticles.length === 0 && (

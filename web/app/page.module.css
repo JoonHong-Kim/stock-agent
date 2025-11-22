@@ -23,6 +23,12 @@
     -webkit-text-fill-color: transparent;
 }
 
+.marketSummaryWrapper {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .heroDescription {
     font-size: 1.1rem;
     max-width: 600px;

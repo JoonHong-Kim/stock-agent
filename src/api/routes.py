@@ -20,6 +20,7 @@ from ..schemas import (
     WatchlistRequest,
     ReportCreate,
     ReportOut,
+    MarketSummaryOut,
 )
 from ..services.tickers import sync_tickers_from_finnhub
 from ..util import ensure_list, normalize_symbol, parse_symbols
@@ -251,4 +252,28 @@ async def generate_aggregate_report(request: Request) -> ReportOut:
         return await service.generate_aggregate_report()
     except ReportGenerationError as exc:
         raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+
+
+@router.get("/market/summary", response_model=MarketSummaryOut)
+async def get_market_summary(
+    request: Request,
+    session: AsyncSession = Depends(get_session)
+) -> MarketSummaryOut:
+    # Get price service (assuming it's attached to app.state or we instantiate it)
+    # Since PriceService is stateless (except for config), we can instantiate it.
+    # But ideally it should be a dependency. For now, let's use the one from app.state if available or create new.
+    # In main.py: app.state.price_service = price_service (we need to ensure this)
+    
+    price_service = getattr(request.app.state, "price_service", None)
+    if not price_service:
+        from ..services.price_service import PriceService
+        price_service = PriceService()
+
+    # Get watchlist symbols
+    result = await session.execute(select(WatchedSymbol.symbol))
+    watchlist_symbols = result.scalars().all()
+
+    summary_data = await price_service.fetch_market_summary(watchlist_symbols)
+    return MarketSummaryOut(**summary_data)
+
 

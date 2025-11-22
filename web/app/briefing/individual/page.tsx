@@ -94,7 +94,7 @@ export default function DailyBriefingPage() {
   };
 
   return (
-    <AppShell active="individual" actionHref="/" actionLabel="실시간 스트림">
+    <AppShell active="individual">
       <section className={`glass-panel ${styles.heroSection}`}>
         <div className={styles.heroContent}>
           <Badge tone="neutral" className={styles.heroBadge}>
