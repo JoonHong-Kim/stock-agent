@@ -3,10 +3,8 @@ import { NewsArticle, TickerOption, WatchlistEntry } from "@/types/news";
 import { MarketSummary } from "@/types/market";
 import { handleHttpResponse } from "./http";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api";
-
 export async function fetchMarketSummary(): Promise<MarketSummary> {
-  const res = await fetch(`${API_BASE}/market/summary`);
+  const res = await fetch(`${env.backendHttpUrl}/market/summary`);
   if (!res.ok) {
     throw new Error("Failed to fetch market summary");
   }

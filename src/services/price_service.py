@@ -85,7 +85,15 @@ class PriceService:
 
         movers = []
         import asyncio
-        tasks = [self.fetch_quote(sym) for sym in watchlist_symbols]
+        
+        # Limit concurrency to avoid overwhelming the API or hitting rate limits
+        semaphore = asyncio.Semaphore(5)
+
+        async def fetch_with_semaphore(sym):
+            async with semaphore:
+                return await self.fetch_quote(sym)
+
+        tasks = [fetch_with_semaphore(sym) for sym in watchlist_symbols]
         snapshots = await asyncio.gather(*tasks, return_exceptions=True)
 
         for snap in snapshots:
